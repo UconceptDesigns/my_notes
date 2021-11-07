@@ -84,9 +84,6 @@ def api_notes():
         notes.save()
         return make_response("", 201)
 
-
-    
-
 # GET /notes_db/notes_records/3 -> Returns the details of note with id 3 (with 200 success code if doc found, 404 if not)
 # PUT /notes_db/notes_records/3 -> Updates title and details fields of the note with id 3 (with 204 success code)
 # DELETE /notes_db/notes_records -> Deletes note with id 3 (with 204 success code)
