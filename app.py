@@ -1,11 +1,10 @@
-from flask import Flask, make_response, request
-from flask import jsonify
+from flask import Flask, make_response, response, request, jsonify
 from flask_mongoengine import MongoEngine
+from flask_cors import CORS
 import os
-# from flask_cors import CORS
 
 app = Flask(__name__)
-# CORS(app)
+cors = CORS(app)
 
 @app.route('/')
 def index():
@@ -54,6 +53,7 @@ def api_notes():
         notes = []
         for note in Notes.objects:
             notes.append(note)
+        
         return make_response(jsonify(notes), 200)
     elif request.method == 'POST':
         content = request.json
@@ -62,7 +62,7 @@ def api_notes():
         return make_response("", 201)
 
 #   GET / DELETE note by ID
-@app.route('/notes_db/notes/<note_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/notes_db/notes/<note_id>', methods=['GET', 'DELETE'])
 def api_each_note(note_id):
     if request.method == 'GET':
         note_obj = Notes.objects(note_id=note_id).first()
@@ -75,6 +75,7 @@ def api_each_note(note_id):
         note_obj.delete()
         return make_response("", 204)
 
+#   PUT - Update a note by ID
 @app.route('/notes_db/notes/<note_id>', methods=['PUT'])
 def api_update_note(note_id):
     content = request.json
@@ -83,7 +84,7 @@ def api_update_note(note_id):
     return make_response("", 204)
 
 # ----USERS----
-#   Get all users in the database
+#   Get all users / add user
 @app.route('/notes_db/users', methods=['GET', 'POST'])
 def api_users():
     if request.method == 'GET':
@@ -111,6 +112,7 @@ def api_each_user(user_id):
         user_obj.delete()
         return make_response("", 204)
 
+#   PUT - update user by ID
 @app.route('/notes_db/users/<user_id>', methods=['PUT'])
 def api_update_user(user_id):
     content = request.json
