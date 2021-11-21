@@ -1,18 +1,22 @@
-from flask import Flask, make_response, request, jsonify
+from flask import Flask, make_response, request, jsonify, render_template
+from flask_login import UserMixin
 from flask_mongoengine import MongoEngine
 from flask_cors import CORS
-import os
+
 
 app = Flask(__name__)
 cors = CORS(app)
 
-@app.route('/')
-def index():
-    return "Flask API"
 DB_URI = "mongodb+srv://admin:admin@cluster0.clad9.mongodb.net/notes_db?retryWrites=true&w=majority"
 app.config["MONGODB_HOST"] = DB_URI
 db = MongoEngine()
 db.init_app(app)
+
+#Routes
+
+@app.route('/')
+def index():
+    return "Flask API"
 
 # Notes db squema via class - request Body
 class Notes(db.Document):
@@ -33,14 +37,12 @@ class Users(db.Document):
     user_id = db.IntField()
     name = db.StringField()
     user_email = db.StringField()
-    password = db.StringField()
     def to_json(self):
         # converts this document to JSON format
         return {
             "user_id": self.user_id,
             "name": self.name,
-            "user_email": self.user_email,
-            "password": self.password
+            "user_email": self.user_email
         }
 
 # ----NOTES----
@@ -94,7 +96,7 @@ def api_users():
         return make_response(jsonify(users), 200)
     elif request.method == 'POST':
         content = request.json
-        users = Users(user_id=content['user_id'], name=content['name'], user_email=content['user_email'], password=content['password'])
+        users = Users(user_id=content['user_id'], name=content['name'], user_email=content['user_email'])
         users.save()
         return make_response("", 201)
 
@@ -117,7 +119,7 @@ def api_each_user(user_id):
 def api_update_user(user_id):
     content = request.json
     user_obj = Users.objects(user_id=user_id).first()
-    user_obj.update(name=content['name'], user_email=content['user_email'], password=content['password'])
+    user_obj.update(name=content['name'], user_email=content['user_email'])
     return make_response("", 204)
 
 if __name__ == '__main__':
