@@ -1,22 +1,19 @@
-from flask import Flask, make_response, request, jsonify, render_template
-from flask_login import UserMixin
+from flask import Flask, make_response, request, jsonify
 from flask_mongoengine import MongoEngine
 from flask_cors import CORS
-
+import os
 
 app = Flask(__name__)
 cors = CORS(app)
+
+@app.route('/')
+def index():
+    return "Flask API"
 
 DB_URI = "mongodb+srv://admin:admin@cluster0.clad9.mongodb.net/notes_db?retryWrites=true&w=majority"
 app.config["MONGODB_HOST"] = DB_URI
 db = MongoEngine()
 db.init_app(app)
-
-#Routes
-
-@app.route('/')
-def index():
-    return "Flask API"
 
 # Notes db squema via class - request Body
 class Notes(db.Document):
@@ -32,6 +29,7 @@ class Notes(db.Document):
             "details": self.details,
             "user_email": self.user_email
         }
+        
 # Users db squema via class - request Body
 class Users(db.Document):
     user_id = db.IntField()
@@ -63,7 +61,9 @@ def api_notes():
         notes.save()
         return make_response("", 201)
 
+
 #   GET / DELETE note by ID
+
 @app.route('/notes_db/notes/<note_id>', methods=['GET', 'DELETE'])
 def api_each_note(note_id):
     if request.method == 'GET':
@@ -78,6 +78,7 @@ def api_each_note(note_id):
         return make_response("", 204)
 
 #   PUT - Update a note by ID
+
 @app.route('/notes_db/notes/<note_id>', methods=['PUT'])
 def api_update_note(note_id):
     content = request.json
@@ -87,6 +88,7 @@ def api_update_note(note_id):
 
 # ----USERS----
 #   Get all users / add user
+
 @app.route('/notes_db/users', methods=['GET', 'POST'])
 def api_users():
     if request.method == 'GET':
@@ -101,6 +103,7 @@ def api_users():
         return make_response("", 201)
 
 #   GET / DELETE user by ID
+
 @app.route('/notes_db/users/<user_id>', methods=['GET', 'DELETE'])
 def api_each_user(user_id):
     if request.method == 'GET':
@@ -121,6 +124,5 @@ def api_update_user(user_id):
     user_obj = Users.objects(user_id=user_id).first()
     user_obj.update(name=content['name'], user_email=content['user_email'])
     return make_response("", 204)
-
 if __name__ == '__main__':
     app.run(debug=True)
