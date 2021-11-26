@@ -124,5 +124,20 @@ def api_update_user(user_id):
     user_obj = Users.objects(user_id=user_id).first()
     user_obj.update(name=content['name'], user_email=content['user_email'])
     return make_response("", 204)
+
+#   LOGIN
+@app.route('/notes_db/login', methods=['GET', 'POST'])
+def api_login():
+    if request.method == 'GET':
+        users = []
+        for user in Users.objects:
+            users.append(user)
+        return make_response(jsonify(users), 200)
+    elif request.method == 'POST':
+        content = request.json
+        users = Users(user_id=content['user_id'], name=content['name'], user_email=content['user_email'])
+        users.save()
+        return make_response("", 201)
+
 if __name__ == '__main__':
     app.run(debug=True)
