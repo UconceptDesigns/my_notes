@@ -25,7 +25,8 @@ class Notes(db.Document):
     def to_json(self):
         # converts this document to JSON format
         return {
-            "_id": ObjectId(),
+            # "_id": ObjectId(),
+            "note_id": self.note_id,
             "title": self.title,
             "details": self.details,
             "user_email": self.user_email
