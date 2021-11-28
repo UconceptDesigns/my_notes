@@ -3,6 +3,7 @@ from flask_mongoengine import MongoEngine
 from flask_cors import CORS
 from bson.objectid import ObjectId
 import os
+from random import randint
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -59,7 +60,7 @@ def api_notes():
         return make_response(jsonify(notes), 200)
     elif request.method == 'POST':
         content = request.json
-        id=randomId()
+        id=randint(1,999)
         notes = Notes(notes_id=id,title=content['title'], details=content['details'], user_email=content['user_email'])
         notes.save()
         return make_response("", 201)
@@ -143,4 +144,4 @@ def api_login():
         return make_response("", 201)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
