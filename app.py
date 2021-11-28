@@ -1,6 +1,7 @@
 from flask import Flask, make_response, request, jsonify
 from flask_mongoengine import MongoEngine
 from flask_cors import CORS
+from bson.objectid import ObjectId
 import os
 
 app = Flask(__name__)
@@ -24,7 +25,7 @@ class Notes(db.Document):
     def to_json(self):
         # converts this document to JSON format
         return {
-            "note_id": self.note_id,
+            "_id": ObjectId(),
             "title": self.title,
             "details": self.details,
             "user_email": self.user_email
@@ -57,7 +58,8 @@ def api_notes():
         return make_response(jsonify(notes), 200)
     elif request.method == 'POST':
         content = request.json
-        notes = Notes(note_id=content['note_id'], title=content['title'], details=content['details'], user_email=content['user_email'])
+        id=randomId()
+        notes = Notes(notes_id=id,title=content['title'], details=content['details'], user_email=content['user_email'])
         notes.save()
         return make_response("", 201)
 
