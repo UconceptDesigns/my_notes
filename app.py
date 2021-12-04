@@ -11,7 +11,6 @@ cors = CORS(app)
 @app.route('/')
 def index():
     return "Flask API"
-
 DB_URI = "mongodb+srv://admin:admin@cluster0.clad9.mongodb.net/notes_db?retryWrites=true&w=majority"
 app.config["MONGODB_HOST"] = DB_URI
 db = MongoEngine()
@@ -19,7 +18,7 @@ db.init_app(app)
 
 # Notes db squema via class - request Body
 class Notes(db.Document):
-    note_id = db.IntField()
+    # note_id = db.IntField()
     title = db.StringField()
     details = db.StringField()
     user_email = db.StringField()
@@ -27,7 +26,7 @@ class Notes(db.Document):
         # converts this document to JSON format
         return {
             "_id": ObjectId(),
-            "note_id": self.note_id,
+            # "note_id": self.note_id,
             "title": self.title,
             "details": self.details,
             "user_email": self.user_email
@@ -35,12 +34,13 @@ class Notes(db.Document):
         
 # Users db squema via class - request Body
 class Users(db.Document):
+    user_id = db.IntField()
     name = db.StringField()
     user_email = db.StringField()
     def to_json(self):
         # converts this document to JSON format
         return {
-           "_id": ObjectId(),
+            "user_id": self.user_id,
             "name": self.name,
             "user_email": self.user_email
         }
@@ -48,7 +48,6 @@ class Users(db.Document):
 # ----NOTES----
 #   GET /notes_db/notes -> Returns the details of ALL notes (with code 200 success code)
 #   POST /notes_db/notes -> Creates a New note and returns 201 success code (empty response body)
-
 @app.route('/notes_db/notes', methods=['GET', 'POST'])
 def api_notes():
     if request.method == 'GET':
@@ -58,7 +57,7 @@ def api_notes():
         return make_response(jsonify(notes), 200)
     elif request.method == 'POST':
         content = request.json
-        notes = Notes(note_id=content['note_id'], title=content['title'], details=content['details'], user_email=content['user_email'])
+        notes = Notes(title=content['title'], details=content['details'], user_email=content['user_email'])
         notes.save()
         return make_response("", 201)
 
@@ -72,7 +71,7 @@ def api_each_note(_id):
         else:
             return make_response("", 404)
     elif request.method == 'DELETE':
-        note_obj = Notes.objects(note_id).first()
+        note_obj = Notes.objects(_id).first()
         note_obj.delete()
         return make_response("", 204)
 
@@ -81,7 +80,7 @@ def api_each_note(_id):
 def api_update_note(_id):
     content = request.json
     note_obj = Notes.objects(_id).first()
-    note_obj.update(note_id=content['note_id'], title=content['title'], details=content['details'], user_email=content['user_email'])
+    note_obj.update(title=content['title'], details=content['details'], user_email=content['user_email'])
     return make_response("", 204)
 
 # ----USERS----
@@ -109,11 +108,11 @@ def api_each_user(_id):
         else:
             return make_response("", 404)
     elif request.method == 'DELETE':
-        user_obj = Users.objects(note_id).first()
+        user_obj = Users.objects(_id).first()
         user_obj.delete()
         return make_response("", 204)
-#   PUT - update user by ID
 
+#   PUT - update user by ID
 @app.route('/notes_db/users/<_id>', methods=['PUT'])
 def api_update_user(_id):
     content = request.json
@@ -134,6 +133,6 @@ def api_login():
         users = Users(name=content['name'], user_email=content['user_email'])
         users.save()
         return make_response("", 201)
-
+        
 if __name__ == '__main__':
     app.run(debug=True)
