@@ -81,7 +81,7 @@ def api_each_note(_id):
 def api_update_note(_id):
     content = request.json
     note_obj = Notes.objects(_id).first()
-    note_obj.update(title=content['title'], details=content['details'], user_email=content['user_email'])
+    note_obj.update(note_id=content['note_id'], title=content['title'], details=content['details'], user_email=content['user_email'])
     return make_response("", 204)
 
 # ----USERS----
