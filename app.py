@@ -27,7 +27,6 @@ class Notes(db.Document):
         # converts this document to JSON format
         return {
             "_id": ObjectId(),
-            # "note_id": self.note_id,
             "title": self.title,
             "details": self.details,
             "user_email": self.user_email
@@ -35,13 +34,12 @@ class Notes(db.Document):
         
 # Users db squema via class - request Body
 class Users(db.Document):
-    user_id = db.IntField()
     name = db.StringField()
     user_email = db.StringField()
     def to_json(self):
         # converts this document to JSON format
         return {
-            "user_id": self.user_id,
+           "_id": ObjectId(),
             "name": self.name,
             "user_email": self.user_email
         }
@@ -110,7 +108,7 @@ def api_each_user(_id):
         else:
             return make_response("", 404)
     elif request.method == 'DELETE':
-        user_obj = Users.objects(_id).first()
+        user_obj = Users.objects(note_id).first()
         user_obj.delete()
         return make_response("", 204)
 #   PUT - update user by ID
