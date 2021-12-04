@@ -27,9 +27,9 @@ class Notes(db.Document):
         # converts this document to JSON format
         return {
             "_id": ObjectId(),
+            "note_id": self.note_id,
             "title": self.title,
             "details": self.details,
-            "note_id": self.note_id,
             "user_email": self.user_email
         }
         
@@ -58,7 +58,7 @@ def api_notes():
         return make_response(jsonify(notes), 200)
     elif request.method == 'POST':
         content = request.json
-        notes = Notes(title=content['title'], details=content['details'], user_email=content['user_email'], note_id=content['note_id'])
+        notes = Notes(note_id=content['note_id'], title=content['title'], details=content['details'], user_email=content['user_email'])
         notes.save()
         return make_response("", 201)
 
