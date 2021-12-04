@@ -19,7 +19,7 @@ db.init_app(app)
 
 # Notes db squema via class - request Body
 class Notes(db.Document):
-    # note_id = db.IntField()
+    note_id = db.IntField()
     title = db.StringField()
     details = db.StringField()
     user_email = db.StringField()
@@ -29,6 +29,7 @@ class Notes(db.Document):
             "_id": ObjectId(),
             "title": self.title,
             "details": self.details,
+            "note_id": self.note_id,
             "user_email": self.user_email
         }
         
@@ -71,7 +72,7 @@ def api_each_note(_id):
         else:
             return make_response("", 404)
     elif request.method == 'DELETE':
-        note_obj = Notes.objects(_id).first()
+        note_obj = Notes.objects(note_id).first()
         note_obj.delete()
         return make_response("", 204)
 
