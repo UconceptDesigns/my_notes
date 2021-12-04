@@ -58,7 +58,7 @@ def api_notes():
         return make_response(jsonify(notes), 200)
     elif request.method == 'POST':
         content = request.json
-        notes = Notes(title=content['title'], details=content['details'], user_email=content['user_email'])
+        notes = Notes(title=content['title'], details=content['details'], user_email=content['user_email'], note_id=content['note_id'])
         notes.save()
         return make_response("", 201)
 
