@@ -18,15 +18,13 @@ db.init_app(app)
 
 # Notes db squema via class - request Body
 class Notes(db.Document):
-    # note_id = db.IntField()
     title = db.StringField()
     details = db.StringField()
     user_email = db.StringField()
     def to_json(self):
         # converts this document to JSON format
         return {
-            "_id": ObjectId(),
-            # "note_id": self.note_id,
+            "_id": str(self.pk),
             "title": self.title,
             "details": self.details,
             "user_email": self.user_email
@@ -53,7 +51,7 @@ def api_notes():
     if request.method == 'GET':
         notes = []
         for note in Notes.objects:
-            notes.append(note)
+            notes.append(note.to_json())
         return make_response(jsonify(notes), 200)
     elif request.method == 'POST':
         content = request.json
@@ -62,24 +60,24 @@ def api_notes():
         return make_response("", 201)
 
 #   GET / DELETE note by ID
-@app.route('/notes_db/notes/<_id>', methods=['GET', 'DELETE'])
-def api_each_note(_id):
+@app.route('/notes_db/notes/<id>', methods=['GET', 'DELETE'])
+def api_each_note(id):
     if request.method == 'GET':
-        note_obj = Notes.objects(_id).first()
+        note_obj = Notes.objects(pk=ObjectId(id)).first()
         if note_obj:
-            return make_response(jsonify(note_obj.to_json()), 200)
+            return make_response(note_obj.to_json(), 200)
         else:
             return make_response("", 404)
     elif request.method == 'DELETE':
-        note_obj = Notes.objects(_id).first()
+        note_obj = Notes.objects(pk=ObjectId(id))
         note_obj.delete()
         return make_response("", 204)
 
 #   PUT - Update a note by ID
 @app.route('/notes_db/notes/<_id>', methods=['PUT'])
-def api_update_note(_id):
+def api_update_note(id):
     content = request.json
-    note_obj = Notes.objects(_id).first()
+    note_obj = Notes.objects(pk=ObjectId(id)).first()
     note_obj.update(title=content['title'], details=content['details'], user_email=content['user_email'])
     return make_response("", 204)
 
@@ -90,7 +88,7 @@ def api_users():
     if request.method == 'GET':
         users = []
         for user in Users.objects:
-            users.append(user)
+            users.append(user.to_json())
         return make_response(jsonify(users), 200)
     elif request.method == 'POST':
         content = request.json
@@ -100,23 +98,23 @@ def api_users():
 
 #   GET / DELETE user by ID
 @app.route('/notes_db/users/<_id>', methods=['GET', 'DELETE'])
-def api_each_user(_id):
+def api_each_user(id):
     if request.method == 'GET':
-        user_obj = Users.objects(_id).first()
+        user_obj = Users.objects(pk=ObjectId(id)).first()
         if user_obj:
-            return make_response(jsonify(user_obj.to_json()), 200)
+            return make_response(user_obj.to_json()), 200)
         else:
             return make_response("", 404)
     elif request.method == 'DELETE':
-        user_obj = Users.objects(_id).first()
+        user_obj = Users.objects(pk=OpjectId(id))
         user_obj.delete()
         return make_response("", 204)
 
 #   PUT - update user by ID
 @app.route('/notes_db/users/<_id>', methods=['PUT'])
-def api_update_user(_id):
+def api_update_user(id):
     content = request.json
-    user_obj = Users.objects(_id).first()
+    user_obj = Users.objects(pk=ObjectId(id)).first()
     user_obj.update(name=content['name'], user_email=content['user_email'])
     return make_response("", 204)
 
@@ -127,7 +125,7 @@ def api_login():
         users = []
         for user in Users.objects:
             users.append(user)
-        return make_response(jsonify(users), 200)
+        return make_response(user_obj.to_json, 200)
     elif request.method == 'POST':
         content = request.json
         users = Users(name=content['name'], user_email=content['user_email'])
