@@ -102,11 +102,11 @@ def api_each_user(id):
     if request.method == 'GET':
         user_obj = Users.objects(pk=ObjectId(id)).first()
         if user_obj:
-            return make_response(user_obj.to_json()), 200)
+            return make_response(user_obj.to_json(), 200)
         else:
             return make_response("", 404)
     elif request.method == 'DELETE':
-        user_obj = Users.objects(pk=OpjectId(id))
+        user_obj = Users.objects(pk=ObjectId(id))
         user_obj.delete()
         return make_response("", 204)
 
@@ -125,7 +125,7 @@ def api_login():
         users = []
         for user in Users.objects:
             users.append(user)
-        return make_response(user_obj.to_json, 200)
+        return make_response(jsonify(users), 200)
     elif request.method == 'POST':
         content = request.json
         users = Users(name=content['name'], user_email=content['user_email'])
