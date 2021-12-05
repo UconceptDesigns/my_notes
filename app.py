@@ -32,13 +32,12 @@ class Notes(db.Document):
         
 # Users db squema via class - request Body
 class Users(db.Document):
-    user_id = db.IntField()
     name = db.StringField()
     user_email = db.StringField()
     def to_json(self):
         # converts this document to JSON format
         return {
-            "user_id": self.user_id,
+            "_id": str(self.pk),
             "name": self.name,
             "user_email": self.user_email
         }
