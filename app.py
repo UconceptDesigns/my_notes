@@ -93,7 +93,7 @@ def api_users():
         content = request.json
         users = Users(name=content['name'], user_email=content['user_email'])
         users.save()
-        return make_response("", 201)
+        return make_response(jsonify(users), 201)
 
 #   GET / DELETE user by ID
 @app.route('/notes_db/users/<_id>', methods=['GET', 'DELETE'])
