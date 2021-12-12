@@ -121,8 +121,12 @@ def api_update_user(id):
 
 
 @app.route('/notes_db/user/login/<value>', methods=[ 'POST'])
-def findUser( value):
-    if (notes_db.users.findOne({req.body.user_email}) == true):
+def findUser(value):
+    users = []
+    if request.method = 'POST':
+        # content = request.json
+        # users = Users(name=content['name'], user_email=content['user_email'])
+        notes_db.users.findOne({req.body.value}) == True
         return make_response("", 200)
   
 
