@@ -93,7 +93,7 @@ def api_users():
         content = request.json
         users = Users(name=content['name'], user_email=content['user_email'])
         users.save()
-        return make_response(jsonify(users), 201)
+        return make_response("", 201)
 
 #   GET / DELETE user by ID
 @app.route('/notes_db/users/<_id>', methods=['GET', 'DELETE'])
@@ -118,6 +118,14 @@ def api_update_user(id):
     return make_response("", 204)
 
 #   LOGIN
+
+
+@app.route('/notes_db/user/login/<value>', methods=[ 'POST'])
+def findUser( value):
+    if (notes_db.users.findOne({req.body.user_email}) == true):
+        return make_response("", 200)
+  
+
 @app.route('/notes_db/login', methods=['GET', 'POST'])
 def api_login():
     if request.method == 'GET':
