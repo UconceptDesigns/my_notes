@@ -120,13 +120,18 @@ def api_update_user(id):
 #   LOGIN
 
 
+# @app.route('/notes_db/user/login/<value>', methods=[ 'POST'])
+# def findUser(value):
+#     if notes_db.users.findOne({req.body.value}) == True:
+#         # content = request.json
+#         # users = Users(name=content['name'], user_email=content['user_email'])
+#         return make_response("User exist", 200)
+  
+
 @app.route('/notes_db/user/login/<value>', methods=[ 'POST'])
 def findUser(value):
-    if notes_db.users.findOne({req.body.value}) == True:
-        # content = request.json
-        # users = Users(name=content['name'], user_email=content['user_email'])
-        return make_response("User exist", 200)
-  
+    if db.Users.find_one({"user_email": value}):
+        return make_response(jsonify(value), 200)
 
 @app.route('/notes_db/login', methods=['GET', 'POST'])
 def api_login():
