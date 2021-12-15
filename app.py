@@ -120,7 +120,8 @@ def api_update_user(id):
 #   LOGIN
 @app.route('/notes_db/user/login/<value>', methods=[ 'POST'])
 def findUser(value):
-    if db.users.findOne({req.body.value}) == True:
+    content= request.json
+    if db.users.findOne({request.body.value}) == True:
         return make_response("User exist", 200)
   
 
