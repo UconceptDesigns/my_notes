@@ -138,18 +138,20 @@ def api_update_user(id):
     user_obj.update(name=content['name'], user_email=content['user_email'])
     return make_response("", 204)
 
-# ==== LOGIN ==== #
+# ============= LOGIN ============ #
 @app.route('/token', methods=['POST'])
 def create_token():
-    username = request.json.get("name", None)
-    user_email= request.json.get("user_email", None)
-    if username != "test" or user_email != "test@testemail.com
-        return jsonify({"msg": "Bad username or email"}), 401
-
-    access_token = create_access_token(identity=user_email)
-    return jsonify(access_token=access_token)
-
-
+    content = request.json
+    users = Users(name=content['name'], user_email=content['user_email'])
+    if db.users.find_one({"user_email": "user_email"}):
+        access_token = create_access_token(identity=user_email)
+        return jsonify(access_token=access_token), 200
+    elif request.method == 'POST':
+        content = request.json
+        users = Users(name=content['name'], user_email=content['user_email'])
+        users.save()
+        access_token = create_access_token(identity=user_email)
+        return jsonify(access_token=access_token), 201
 
 # @app.route('/notes_db/user/login/<value>', methods=[ 'POST'])
 # def findUser(value):
