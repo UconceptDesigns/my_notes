@@ -143,7 +143,7 @@ def api_update_user(id):
 def create_token():
     username = request.json.get("name", None)
     user_email= request.json.get("user_email", None)
-    if username != "test" or user_email != "test@test.com":
+    if username != "test" or user_email != "test@testemail.com
         return jsonify({"msg": "Bad username or email"}), 401
 
     access_token = create_access_token(identity=user_email)
