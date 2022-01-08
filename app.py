@@ -1,20 +1,41 @@
-from flask import Flask, make_response, request, jsonify
+from flask import Flask, make_response, request, jsonify, url_for, send_from_directory
 from flask_mongoengine import MongoEngine
 from flask_cors import CORS
 from bson.objectid import ObjectId
 import os
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
+# from admin import setup_admin
 from random import randint
 
 app = Flask(__name__)
 cors = CORS(app)
+
 
 @app.route('/')
 def index():
     return "Flask API"
 DB_URI = "mongodb+srv://admin:admin@cluster0.clad9.mongodb.net/notes_db?retryWrites=true&w=majority"
 app.config["MONGODB_HOST"] = DB_URI
+
+# --new lines entered--
+# Setup the Flask-JWT-Extended extension
+app.config["JWT_SECRET_KEY"] = "super-secrets9-09itkp0-uuy"
+jwt = JWTManager(app)
+# --end new lines entered--
+
 db = MongoEngine()
 db.init_app(app)
+
+# def setup_admin(app):
+#     app.secret_key = os.get('FLASK_APP_KEY', 'sample key')
+#     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+#     admin = Admin(app, name='Uconcept Admin', template_mode='bootstrap3')
+
+# # add the admin
+# setup_admin(app)
 
 # Notes db squema via class - request Body
 class Notes(db.Document):
@@ -118,12 +139,24 @@ def api_update_user(id):
     return make_response("", 204)
 
 # ==== LOGIN ==== #
-@app.route('/notes_db/user/login/<value>', methods=[ 'POST'])
-def findUser(value):
-    content = request.json
-    users = Users(name=content['name'], user_email=content['user_email'])
-    if db.users.find_one({"user_email": "janetgarcia007@gmail.com"}):
-        return make_response(jsonify(value), 200)
+@app.route('/token', methods=['POST'])
+def create_token():
+    username = request.json.get("name", None)
+    user_email= request.json.get("user_email", None)
+    if username != "test" or user_email != "test@test.com":
+        return jsonify({"msg": "Bad username or email"}), 401
+
+    access_token = create_access_token(identity=user_email)
+    return jsonify(access_token=access_token)
+
+
+
+# @app.route('/notes_db/user/login/<value>', methods=[ 'POST'])
+# def findUser(value):
+#     content = request.json
+#     users = Users(name=content['name'], user_email=content['user_email'])
+#     if db.users.find_one({"user_email": "janetgarcia007@gmail.com"}):
+#         return make_response(jsonify(value), 200)
 
 @app.route('/notes_db/login', methods=['GET', 'POST'])
 def api_login():
