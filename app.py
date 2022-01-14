@@ -19,11 +19,11 @@ def index():
 DB_URI = "mongodb+srv://admin:admin@cluster0.clad9.mongodb.net/notes_db?retryWrites=true&w=majority"
 app.config["MONGODB_HOST"] = DB_URI
 
-# # --new lines entered--
-# # Setup the Flask-JWT-Extended extension
-# app.config["JWT_SECRET_KEY"] = "super-!x@1-!if;=D;sl:LIew=secrets9-09itkp0-uuy"
-# jwt = JWTManager(app)
-# # --end new lines entered--
+# --new lines entered--
+# Setup the Flask-JWT-Extended extension
+app.config["JWT_SECRET_KEY"] = "super-!x@1-!if;=D;sl:LIew=secrets9-09itkp0-uuy"
+jwt = JWTManager(app)
+# --end new lines entered--
 
 db = MongoEngine()
 db.init_app(app)
@@ -62,8 +62,8 @@ class Users(db.Document):
 
 def api_notes():
     if request.method == 'GET':
-        # Authorization:"Bearer $JWT"   # <====== added this line =======
-        # current_user = get_jwt_identity()    # <====== added this line =======
+        Authorization:"Bearer $JWT"   # <====== added this line =======
+        current_user = get_jwt_identity()    # <====== added this line =======
         notes = []
         for note in Notes.objects:
             notes.append(note.to_json())
@@ -98,40 +98,40 @@ def api_update_note(id):
 
 # ----USERS----
 #   Get all users / add user
-# @app.route('/notes_db/users', methods=['GET', 'POST'])
-# def api_users():
-#     if request.method == 'GET':
-#         users = []
-#         for user in Users.objects:
-#             users.append(user.to_json())
-#         return make_response(jsonify(users), 200)
-#     elif request.method == 'POST':
-#         content = request.json
-#         users = Users(name=content['name'], user_email=content['user_email'])
-#         users.save()
-#         return make_response("", 201)
+@app.route('/notes_db/users', methods=['GET', 'POST'])
+def api_users():
+    if request.method == 'GET':
+        users = []
+        for user in Users.objects:
+            users.append(user.to_json())
+        return make_response(jsonify(users), 200)
+    elif request.method == 'POST':
+        content = request.json
+        users = Users(name=content['name'], user_email=content['user_email'])
+        users.save()
+        return make_response("", 201)
 
-#   GET / DELETE user by ID
-# @app.route('/notes_db/users/<_id>', methods=['GET', 'DELETE'])
-# def api_each_user(id):
-#     if request.method == 'GET':
-#         user_obj = Users.objects(pk=ObjectId(id)).first()
-#         if user_obj:
-#             return make_response(user_obj.to_json(), 200)
-#         else:
-#             return make_response("", 404)
-#     elif request.method == 'DELETE':
-#         user_obj = Users.objects(pk=ObjectId(id))
-#         user_obj.delete()
-#         return make_response("", 204)
+  GET / DELETE user by ID
+@app.route('/notes_db/users/<_id>', methods=['GET', 'DELETE'])
+def api_each_user(id):
+    if request.method == 'GET':
+        user_obj = Users.objects(pk=ObjectId(id)).first()
+        if user_obj:
+            return make_response(user_obj.to_json(), 200)
+        else:
+            return make_response("", 404)
+    elif request.method == 'DELETE':
+        user_obj = Users.objects(pk=ObjectId(id))
+        user_obj.delete()
+        return make_response("", 204)
 
-# #   PUT - update user by ID
-# @app.route('/notes_db/users/<_id>', methods=['PUT'])
-# def api_update_user(id):
-#     content = request.json
-#     user_obj = Users.objects(pk=ObjectId(id)).first()
-#     user_obj.update(name=content['name'], user_email=content['user_email'])
-#     return make_response("", 204)
+#   PUT - update user by ID
+@app.route('/notes_db/users/<_id>', methods=['PUT'])
+def api_update_user(id):
+    content = request.json
+    user_obj = Users.objects(pk=ObjectId(id)).first()
+    user_obj.update(name=content['name'], user_email=content['user_email'])
+    return make_response("", 204)
 
 # ============= LOGIN ============ #
 @app.route('/token', methods=['POST'])
@@ -146,19 +146,6 @@ def create_token():
    
     return jsonify({"msg":"Invalid user name or email. "}), 401
 # ============ end LOGIN ========= #
-
-# @app.route('/notes_db/login', methods=['GET', 'POST'])
-# def api_login():
-#     if request.method == 'GET':
-#         users = []
-#         for user in Users.objects:
-#             users.append(user)
-#         return make_response(jsonify(users), 200)
-#     elif request.method == 'POST':
-#         content = request.json
-#         users = Users(name=content['name'], user_email=content['user_email'])
-#         users.save()
-#         return make_response("", 201)
-        
+       
 if __name__ == '__main__':
     app.run(debug=True)
