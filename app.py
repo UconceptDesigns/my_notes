@@ -21,8 +21,8 @@ app.config["MONGODB_HOST"] = DB_URI
 
 # --new lines entered--
 # Setup the Flask-JWT-Extended extension
-app.config["JWT_SECRET_KEY"] = "super-!x@1-!if;=D;sl:LIew=secrets9-09itkp0-uuy"
-jwt = JWTManager(app)
+# app.config["JWT_SECRET_KEY"] = "super-!x@1-!if;=D;sl:LIew=secrets9-09itkp0-uuy"
+# jwt = JWTManager(app)
 # --end new lines entered--
 
 db = MongoEngine()
@@ -62,8 +62,8 @@ class Users(db.Document):
 
 def api_notes():
     if request.method == 'GET':
-        Authorization:"Bearer $JWT"   # <====== added this line =======
-        current_user = get_jwt_identity()    # <====== added this line =======
+        # Authorization:"Bearer $JWT"   # <====== added this line =======
+        # current_user = get_jwt_identity()    # <====== added this line =======
         notes = []
         for note in Notes.objects:
             notes.append(note.to_json())
