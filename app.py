@@ -19,11 +19,11 @@ def index():
 DB_URI = "mongodb+srv://admin:admin@cluster0.clad9.mongodb.net/notes_db?retryWrites=true&w=majority"
 app.config["MONGODB_HOST"] = DB_URI
 
-# --new lines entered--
-# Setup the Flask-JWT-Extended extension
-app.config["JWT_SECRET_KEY"] = "super-!x@1-!if;=D;sl:LIew=secrets9-09itkp0-uuy"
-jwt = JWTManager(app)
-# --end new lines entered--
+# # --new lines entered--
+# # Setup the Flask-JWT-Extended extension
+# app.config["JWT_SECRET_KEY"] = "super-!x@1-!if;=D;sl:LIew=secrets9-09itkp0-uuy"
+# jwt = JWTManager(app)
+# # --end new lines entered--
 
 db = MongoEngine()
 db.init_app(app)
@@ -58,7 +58,7 @@ class Users(db.Document):
 #   GET /notes_db/notes -> Returns the details of ALL notes (with code 200 success code)
 #   POST /notes_db/notes -> Creates a New note and returns 201 success code (empty response body)
 @app.route('/notes_db/notes', methods=['GET', 'POST'])
-@jwt_required()   # <====== added this line =======
+# @jwt_required()   # <====== added this line =======
 
 def api_notes():
     if request.method == 'GET':
