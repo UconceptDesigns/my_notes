@@ -22,7 +22,7 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 # --Setup the Flask-JWT-Extended extension--
 app.config["JWT_SECRET_KEY"] = "super-!x@1-!if;=D;sl:LIew=secrets9-09itkp0-uuy"
 jwt = JWTManager(app)
-# --end new lines entered--
+
 
 db = MongoEngine()
 db.init_app(app)
@@ -56,8 +56,8 @@ def index():
     return "Flask API"
 
 # ----NOTES----
-#   GET /notes_db/notes -> Returns the details of ALL notes (with code 200 success code)
-#   POST /notes_db/notes -> Creates a New note and returns 201 success code (empty response body)
+#   GET /notes_db/notes -> Returns the details of ALL notes
+#   POST /notes_db/notes -> Creates a New note and returns 201 success code
 @app.route('/notes_db/notes', methods=['GET', 'POST'])
 @cross_origin(origin='*',headers=['Content-Type','Authorization'])
 @jwt_required()
@@ -119,27 +119,6 @@ def create_token():
         access_token = create_access_token(identity=request.json.get("user_email", None))
         return jsonify(access_token=access_token), 200
     return jsonify({"msg":"Invalid user name or email. "}), 401
-
-# @app.after_request
-# # @cross_origin(origin='*',headers=['Content-Type','Authorization'])
-# def refresh_expiring_jwt(response):
-#     try:
-#         exp_timestamp = get_jwt()["exp"]
-#         now = datetime.now(timezone.utc)
-#         target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
-#         if target_timestamp > exp_timestamp:
-#             access_token = create_access_token(identity=get_jwt_identity())
-#             return response
-#     except (RuntimeError, KeyError):
-#         # Return original response if there is no valid JWT.
-#         return response
-
-# ============= LOGOUT ============ #
-@app.route("/logout", methods=["POST"])
-def logout():
-    response = jsonify({"msg": "Logout successful"})
-    unset_jwt_cookies(response)
-    return response
 
 if __name__ == '__main__':
     app.run(debug=True)
