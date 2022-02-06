@@ -1,6 +1,6 @@
 # my_notes
 
-REST API with Flask
+Python REST API with Flask
 
 ## Description
 
